@@ -18,7 +18,7 @@ header.top p{margin:6px 0 0;opacity:.9;font-size:15px}
 header.top .contact{margin-left:auto;text-align:right;font-size:13px;opacity:.9}
 .atoms{position:absolute;right:-30px;top:-40px;opacity:.12}
 nav.menu{background:var(--nav);display:flex;flex-wrap:wrap;position:sticky;top:0;z-index:5}
-nav.menu a{text-decoration:none;all:unset;cursor:pointer;color:#fff;padding:12px 18px;font-weight:700;font-size:15px;border-right:1px solid rgba(255,255,255,.08)}
+nav.menu a{text-decoration:none;all:unset;cursor:pointer;color:#fff;padding:12px 13px;font-weight:700;font-size:15px;border-right:1px solid rgba(255,255,255,.08)}
 nav.menu a:hover,nav.menu a.on{background:var(--navh)}
 nav.menu a:focus-visible{outline:2px solid #fff;outline-offset:-3px}
 .main{display:grid;grid-template-columns:1fr 280px;gap:28px;padding:24px 28px 40px}
@@ -103,6 +103,28 @@ footer{border-top:1px solid var(--line);padding:16px 28px;font-size:13px;color:v
 .fb input,.fb select,.fb textarea{width:100%;font:inherit;font-size:15px;border:1px solid var(--line);border-radius:4px;padding:7px 9px;background:#fff}
 .fb textarea{min-height:130px}
 .note{background:#fbf7ee;border:1px solid #efe3c6;border-radius:6px;padding:10px 12px;font-size:14px;margin:10px 0}
+.mk{all:unset;cursor:pointer;font-size:14px;margin:0 2px 3px -6px;padding:0 4px;border-radius:4px;color:#9aa6ad}
+.mk:hover{background:#eef1f3}
+.mk.on.d{color:#2f8a6e}.mk.on.v{color:#e0a100}
+.f.done{opacity:.75}.f.done:after{content:" ✓";color:#2f8a6e;font-weight:700}
+.progress{background:#f6f8f9;border:1px solid var(--line);border-radius:6px;padding:8px 12px;margin:4px 0 10px;font-size:14px}
+.pbar{height:8px;background:#e3e9ed;border-radius:4px;overflow:hidden;margin-top:6px}
+.pbar i{display:block;height:100%;background:var(--c,#2f8a6e)}
+.sres{border-bottom:1px solid var(--line);padding:10px 2px}
+.sres .st{font-weight:700}
+.sres .sn{font-size:14px;color:#36434b;margin-top:4px}
+.sres mark{background:#ffe58a;padding:0 1px}
+.bigsearch{display:flex;gap:8px;margin:6px 0 12px}
+.bigsearch input{flex:1;font:inherit;font-size:17px;border:2px solid var(--nav);border-radius:6px;padding:8px 12px}
+.cal{width:100%;border-collapse:collapse;font-size:15px;margin:8px 0 18px}
+.cal th,.cal td{border:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top}
+.cal th{background:#f3f6f8}
+.cal td.past{color:#9aa6ad;text-decoration:line-through}
+.cal .soon{display:inline-block;background:#fff3cd;border:1px solid #f0d27a;border-radius:3px;padding:0 5px;font-size:12px;margin-left:4px}
+.countdown{display:flex;gap:12px;flex-wrap:wrap;margin:6px 0 18px}
+.cd{flex:1;min-width:150px;border-radius:8px;padding:12px 14px;color:#fff;background:var(--c)}
+.cd b{font:700 30px/1 "PT Serif",Georgia,serif;display:block}
+.cd span{font-size:13px;opacity:.95}
 </style>
 </head>
 <body>
@@ -126,7 +148,7 @@ footer{border-top:1px solid var(--line);padding:16px 28px;font-size:13px;color:v
 <div class="main"><section id="content"></section><aside id="side"></aside></div>
 <footer>Неофициален тематичен архив. Задачите и решенията са изготвени от националните комисии на олимпиадите (МОН) и са публикувани от РУО – София-град на <a href="https://www.prirodninauki.bg/" target="_blank" rel="noopener">prirodninauki.bg</a>. Под всяка публикация има връзка към оригинала. Файловете във формат Word са преобразувани в PDF.</footer>
 </div>
-<div class="viewer" id="viewer"><div class="vbar"><b id="vt"></b><span id="vp" style="font-size:13px;opacity:.85"></span><button id="vd" style="display:none">⬇ Свали</button><a id="vo" href="#" target="_blank" rel="noopener">Отвори оригинала ↗</a><button id="vc">✕ Затвори</button></div><div class="vbody" id="vb"></div></div>
+<div class="viewer" id="viewer"><div class="vbar"><b id="vt"></b><span id="vp" style="font-size:13px;opacity:.85"></span><button id="vmd" data-vmk="d">○ Решена</button><button id="vmv" data-vmk="v">☆ Любима</button><button id="vd" style="display:none">⬇ Свали</button><a id="vo" href="#" target="_blank" rel="noopener">Отвори оригинала ↗</a><button id="vc">✕ Затвори</button></div><div class="vbody" id="vb"></div></div>
 <script src="lib/pdf.min.js"></script>
 <script src="lib/jszip.min.js"></script>
 <script>
@@ -134,7 +156,14 @@ const POSTS=[{"id":21848,"s":"fiz","t":"ЗАДАЧИ ОТ ОБЛАСТЕН КР�
 const SITE="A";
 const URLS={A:"https://claude.ai/artifact/MbRN9on7V5u5Mv6Kqx75Hd",B:"https://claude.ai/artifact/4c19onn38SnWLNS1M1zssr",C:"https://claude.ai/artifact/Y7AgZnseQmYsGftwSHk58e"};
 const HOST={astro:"A",him:"A",fiz:"A",bio:"A"};
-const EXTRA={facts:"Любопитно",news:"Новини и статии",contact:"Пишете ни"};
+const EXTRA={facts:"Любопитно",news:"Новини и статии",contact:"Пишете ни",search:"Търсене",calendar:"Календар"};
+let CAL={"year":"2026/2027","source":"Заповед на министъра на образованието и науката за графика на ученическите олимпиади през 2026/2027 г. (31.08.2026)","sourceUrl":"https://www.mon.bg/nfs/2026/08/6-zapoved-grafik-uons-2026-2027-31082026.pdf","events":[{"s":"fiz","r":"obsh","start":"2027-01-10","deadline":true,"note":"VII–XII клас"},{"s":"fiz","r":"obl","start":"2027-02-13","time":"9:00"},{"s":"fiz","r":"nac","start":"2027-04-23","end":"2027-04-25"},{"s":"astro","r":"obsh","start":"2027-01-15","deadline":true,"note":"V–XII клас"},{"s":"astro","r":"obl","start":"2027-02-21","time":"14:00"},{"s":"astro","r":"nac","start":"2027-05-07","end":"2027-05-09"},{"s":"him","r":"obsh","start":"2027-01-11","deadline":true,"note":"VII–XII клас"},{"s":"him","r":"obl","start":"2027-02-06","time":"14:00"},{"s":"him","r":"nac","start":"2027-03-19","end":"2027-03-21"},{"s":"bio","r":"obsh","start":"2027-01-29","deadline":true,"note":"VII–XII клас"},{"s":"bio","r":"obl","start":"2027-02-14","time":"9:00"},{"s":"bio","r":"nac","start":"2027-03-26","end":"2027-03-28"}]};
+/* --- отметки --- */
+const MK={d:new Set(),v:new Set()};
+try{MK.d=new Set(JSON.parse(localStorage.getItem("pn_done")||"[]"));MK.v=new Set(JSON.parse(localStorage.getItem("pn_fav")||"[]"))}catch(e){}
+function mkSave(){try{localStorage.setItem("pn_done",JSON.stringify([...MK.d]));localStorage.setItem("pn_fav",JSON.stringify([...MK.v]))}catch(e){}}
+function mkToggle(kind,p){const s=MK[kind];s.has(p)?s.delete(p):s.add(p);mkSave()}
+const isTask=it=>it.k.startsWith("задачи");
 let CAN_DL=true;let DLNS=null;
 async function saveFile(name,data){
  if(DLNS){try{await DLNS.save({filename:name,data});return true}catch(e){if(e&&e.code==="declined")return false;flash("Свалянето не успя ("+(e&&e.code||"грешка")+").");return false}}
@@ -151,7 +180,7 @@ const SUBJ={astro:{n:"Астрономия",c:"var(--astro)"},fiz:{n:"Физик
 const RN={obsh:"Общински кръг",obl:"Областен кръг",nac:"Национален кръг"};
 const RORD={nac:0,obl:1,obsh:2};
 const GRADES=["5–6","7","8","9","10","11","12"];
-let st={s:SITE==="A"?"home":Object.keys(HOST).find(k=>HOST[k]===SITE),r:"all",g:"all",q:""};
+let st={s:SITE==="A"?"home":Object.keys(HOST).find(k=>HOST[k]===SITE),r:"all",g:"all",q:"",m:"all"};
 try{const h=location.hash.slice(1);if((SUBJ[h]||EXTRA[h])&&local(h))st.s=h}catch(e){}
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 function gr(g){if(!g)return null;const m=g.split("–").map(Number);return [m[0],m[1]||m[0]]}
@@ -160,9 +189,9 @@ function gmatch(g,sel){if(sel==="all")return true;const r=gr(g);if(!r)return fal
 const GROUPS=[];
 POSTS.forEach(p=>{const m={};p.i.forEach(it=>{const k=it.r+"|"+it.y;(m[k]=m[k]||{p,r:it.r,y:it.y,items:[]}).items.push(it)});Object.values(m).forEach(g=>GROUPS.push(g))});
 const ALLF=GROUPS.reduce((a,g)=>a+g.items.length,0);
-function go(s){if(!local(s)){location.href=hrefOf(s);return}st={s,r:"all",g:"all",q:""};try{history.replaceState(null,"",s==="home"?location.pathname:"#"+s)}catch(e){}render();window.scrollTo(0,0)}
+function go(s){if(!local(s)){location.href=hrefOf(s);return}st={s,r:"all",g:"all",q:"",m:"all"};try{history.replaceState(null,"",s==="home"?location.pathname:"#"+s)}catch(e){}render();window.scrollTo(0,0)}
 function renderMenu(){const m=document.getElementById("menu");m.innerHTML="";
- [["home","Начало"],...Object.entries(SUBJ).map(([k,v])=>[k,v.n]),["facts","Любопитно"],["news","Новини и статии"],["contact","✉ Пишете ни"]].forEach(([k,n])=>{const b=document.createElement("a");b.textContent=n;b.href=hrefOf(k);if(!local(k))b.target="_top";if(st.s===k)b.className="on";if(local(k))b.onclick=ev=>{ev.preventDefault();go(k)};m.appendChild(b)})}
+ [["home","Начало"],...Object.entries(SUBJ).map(([k,v])=>[k,v.n]),["facts","Любопитно"],["news","Новини и статии"],["search","🔎 Търсене"],["calendar","📅 Календар"],["contact","✉ Пишете ни"]].forEach(([k,n])=>{const b=document.createElement("a");b.textContent=n;b.href=hrefOf(k);if(!local(k))b.target="_top";if(st.s===k)b.className="on";if(local(k))b.onclick=ev=>{ev.preventDefault();go(k)};m.appendChild(b)})}
 function groupHTML(g,gi){
  const S=SUBJ[g.p.s];
  const byG={};const order=[];
@@ -173,7 +202,7 @@ function groupHTML(g,gi){
      const multi=byG[k].filter(x=>x.k===it.k).length>1;
      const idx=multi?" "+(byG[k].filter(x=>x.k===it.k).indexOf(it)+1):"";
      const name=it.k.charAt(0).toUpperCase()+it.k.slice(1)+idx;
-     return `<a class="f k-${it.k.split(' ')[0]}" href="#" data-p="${it.p}" data-u="${it.u}" data-t="${esc(g.p.t+' – '+(k==="Общо"?"":k+' клас – ')+name)}" title="${esc(it.l)}">📄 ${name} <small>${it.kb>1024?(it.kb/1024).toFixed(1)+" MB":it.kb+" KB"}</small></a>${CAN_DL?`<button class="dl" data-dl="${it.p}" title="Свали ${esc(name)}">⬇</button>`:""}`}).join("");
+     return `<a class="f k-${it.k.split(' ')[0]}${MK.d.has(it.p)?" done":""}" href="#" data-p="${it.p}" data-u="${it.u}" data-t="${esc(g.p.t+' – '+(k==="Общо"?"":k+' клас – ')+name)}" title="${esc(it.l)}">📄 ${name} <small>${it.kb>1024?(it.kb/1024).toFixed(1)+" MB":it.kb+" KB"}</small></a>${CAN_DL?`<button class="dl" data-dl="${it.p}" title="Свали ${esc(name)}">⬇</button>`:""}${isTask(it)?`<button class="mk d${MK.d.has(it.p)?" on":""}" data-mk="d" data-p="${it.p}" title="Отбележи като решена">${MK.d.has(it.p)?"✔":"○"}</button><button class="mk v${MK.v.has(it.p)?" on":""}" data-mk="v" data-p="${it.p}" title="Добави в любими">${MK.v.has(it.p)?"★":"☆"}</button>`:""}`}).join("");
    return `<tr><td class="g">${k==="Общо"?"Общо":k+" клас"}</td><td>${links}</td></tr>`}).join("");
  return `<article class="post" style="--c:${S.c}"><h3>${esc(g.p.t)}</h3>
  <div class="meta"><span class="tag" style="--c:${S.c}">${S.n}</span><span class="round">${RN[g.r]}</span><span>${g.y} г.</span>${CAN_DL?`<button class="zipbtn" data-gi="${gi}">⬇ Свали всички (${g.items.length}) като ZIP</button>`:""}</div>
@@ -183,6 +212,9 @@ function filtered(){
  const q=st.q.trim().toLowerCase();
  return GROUPS.filter(g=>g.p.s===st.s&&(st.r==="all"||g.r===st.r)).map(g=>{
    let items=g.items.filter(it=>gmatch(it.g,st.g));
+   if(st.m==="v")items=items.filter(it=>MK.v.has(it.p));
+   if(st.m==="d")items=items.filter(it=>MK.d.has(it.p));
+   if(st.m==="n")items=items.filter(it=>isTask(it)&&!MK.d.has(it.p));
    if(q)items=items.filter(it=>(g.p.t+" "+it.l+" "+it.g+" "+g.y+" "+RN[g.r]).toLowerCase().includes(q));
    return items.length?{...g,items}:null}).filter(Boolean)
   .sort((a,b)=>b.y-a.y||RORD[a.r]-RORD[b.r]);
@@ -194,6 +226,8 @@ function renderSubject(c){
  <div class="pagehead"><h2 style="color:${S.c}">Олимпиада по ${S.n.toLowerCase()}</h2><span class="count">${nf} файла</span></div>
  <div class="filters"><span class="lbl">Кръг:</span><span id="fr"></span></div>
  <div class="filters"><span class="lbl">Клас:</span><span id="fg"></span></div>
+ <div class="filters"><span class="lbl">Моите:</span><span id="fm"></span></div>
+ <div class="progress" id="prog" style="--c:${S.c}"></div>
  <div class="filters"><input class="search" id="q" type="search" placeholder="Търси (напр. 2019, теоретичен, експеримент…)"></div>
  ${CAN_DL?'<div class="zipbar"><span>Свали наведнъж всичко, което е показано според избраните филтри:</span><button class="zipbtn" id="zipall" style="margin:0">⬇ Свали като ZIP</button><span class="prog" id="zprog"></span></div>':""}
  <div id="list"></div>`;
@@ -201,10 +235,19 @@ function renderSubject(c){
  ["all","obsh","obl","nac"].filter(r=>r==="all"||mine.some(g=>g.r===r)).forEach(r=>{const b=document.createElement("button");b.className="chip"+(st.r===r?" on":"");b.textContent=r==="all"?"Всички":RN[r];b.onclick=()=>{st.r=r;render()};fr.appendChild(b);fr.append(" ")});
  const fg=c.querySelector("#fg");
  ["all",...GRADES].forEach(g=>{if(g!=="all"&&!mine.some(x=>x.items.some(it=>gmatch(it.g,g))))return;const b=document.createElement("button");b.className="chip"+(st.g===g?" on":"");b.textContent=g==="all"?"Всички":g;b.onclick=()=>{st.g=g;render()};fg.appendChild(b);fg.append(" ")});
+ chipRow(c.querySelector("#fm"),[["all","Всички"],["v","★ Любими"],["d","✔ Решени"],["n","○ Нерешени"]],st.m||"all",v=>{st.m=v;render()});
  const q=c.querySelector("#q");q.value=st.q;q.oninput=()=>{st.q=q.value;drawList()};
  drawList();
 }
+function drawProgress(){
+ const pr=document.getElementById("prog");if(!pr)return;
+ const all=GROUPS.filter(g=>g.p.s===st.s&&(st.r==="all"||g.r===st.r)).flatMap(g=>g.items.filter(it=>isTask(it)&&gmatch(it.g,st.g)));
+ const done=all.filter(it=>MK.d.has(it.p)).length,fav=all.filter(it=>MK.v.has(it.p)).length;
+ const pc=all.length?Math.round(100*done/all.length):0;
+ pr.innerHTML=`📈 <b>Моят напредък</b>${st.g!=="all"?" за "+st.g+" клас":""}${st.r!=="all"?", "+RN[st.r].toLowerCase():""}: решени <b>${done}</b> от ${all.length} файла със задачи (${pc}%) · любими: ${fav}<div class="pbar"><i style="width:${pc}%"></i></div><div style="font-size:12px;color:var(--muted);margin-top:4px">Отбелязвайте с ○ решените задачи и с ☆ любимите. Отметките се пазят само в този браузър.</div>`;
+}
 function drawList(){
+ drawProgress();
  const box=document.getElementById("list");const l=filtered();
  if(!l.length){CUR=[];box.innerHTML='<div class="empty">Няма намерени задачи за този избор.</div>';return}
  CUR=l;let h="",cy=null;l.forEach((g,gi)=>{if(g.y!==cy){cy=g.y;h+=`<div class="year">${g.y}</div>`}h+=groupHTML(g,gi)});box.innerHTML=h;
@@ -213,10 +256,13 @@ function renderHome(c){
  const years=[...new Set(GROUPS.map(g=>g.y))].sort((a,b)=>b-a);
  c.innerHTML=`<div class="crumbs">Начало</div><div class="pagehead"><h2>Добре дошли</h2><span class="count">${ALLF} файла · ${years[years.length-1]}–${years[0]}</span></div>
  <p>Тук на едно място са събрани задачите и решенията от общинските, областните и националните кръгове на олимпиадите по <b>астрономия, физика, химия и биология</b>, публикувани на сайта „Природни науки“. Щракнете върху файл и той се отваря направо тук; бутонът „Отвори оригинала“ води до файла на prirodninauki.bg. Изберете предмет, а след това кръг и клас.</p>
+ <div class="bigsearch"><input id="hq" type="search" placeholder="🔎 Търсете в задачите – напр. „генетика“, „оптика“, „равновесие“…"></div>
+ ${upcoming().length?`<h3 style="font-family:'PT Serif',serif;margin:10px 0 6px">Следващите кръгове</h3><div class="countdown">${countdownHTML(3)}</div><p style="margin-top:-8px"><a href="#calendar" onclick="event.preventDefault();go('calendar')">Целият календар →</a></p>`:""}
  <div class="home-grid" id="tiles"></div>
  <h3 style="font-family:'PT Serif',serif;margin-bottom:6px">Последни новини</h3><ul class="news" id="hn"></ul><p><a href="#news" onclick="event.preventDefault();go('news')">Всички новини и статии →</a></p><h3 style="font-family:'PT Serif',serif;margin-bottom:4px">Какво има по години</h3>
  <div class="legend">О – общински, Об – областен, Н – национален кръг</div>
  <div style="overflow-x:auto"><table class="matrix" id="mx"></table></div>`;
+ const hq=c.querySelector("#hq");hq.onkeydown=e=>{if(e.key==="Enter"&&hq.value.trim()){go("search");st.q=hq.value;render()}};
  const t=c.querySelector("#tiles");
  Object.entries(SUBJ).forEach(([k,S])=>{const gs=GROUPS.filter(g=>g.p.s===k);const ys=gs.map(g=>g.y);
   const b=document.createElement("a");b.className="tile";b.href=hrefOf(k);if(!local(k))b.target="_top";b.style.setProperty("--c",S.c);
@@ -230,7 +276,8 @@ function renderHome(c){
 function renderSide(){
  const s=document.getElementById("side");
  const df=FACTS.length?FACTS[Math.floor(Date.now()/864e5)%FACTS.length]:null;
- s.innerHTML=(df?`<div class="box"><h4>💡 Факт на деня</h4><div class="dayfact"><b>${esc(df.title)}</b><br>${esc(df.text)}<br><a href="${hrefOf("facts")}" onclick="event.preventDefault();go('facts')">Още любопитни факти →</a></div></div>`:"")+`<div class="box"><h4>✉ Пишете ни</h4><div>Видяхте проблем или имате идея какво да добавим? <a href="#contact" onclick="event.preventDefault();go('contact')">Пишете ни →</a></div></div>
+ s.innerHTML=(df?`<div class="box"><h4>💡 Факт на деня</h4><div class="dayfact"><b>${esc(df.title)}</b><br>${esc(df.text)}<br><a href="${hrefOf("facts")}" onclick="event.preventDefault();go('facts')">Още любопитни факти →</a></div></div>`:"")+`${upcoming().filter(e=>!e.deadline).length?(()=>{const e=upcoming().filter(e=>!e.deadline)[0],S=SUBJ[e.s];return `<div class="box"><h4>📅 Следващ кръг</h4><div><b>${RN[e.r]} по ${S.n.toLowerCase()}</b><br>${evLabel(e)} – след <b>${daysTo(e)}</b> дни<br><a href="#calendar" onclick="event.preventDefault();go('calendar')">Календар →</a></div></div>`})():""}
+ <div class="box"><h4>✉ Пишете ни</h4><div>Видяхте проблем или имате идея какво да добавим? <a href="#contact" onclick="event.preventDefault();go('contact')">Пишете ни →</a></div></div>
  <div class="box"><h4>Как се ползва</h4><div>Изберете предмет от менюто, после кръг и клас. При всяка олимпиада файловете са подредени по класове:<br><span class="f k-задачи">📄 Задачи</span> <span class="f k-решения">📄 Решения</span> <span class="f k-бланка">📄 Бланка</span></div></div>
  <div class="box"><h4>Съдържание</h4><div>${Object.entries(SUBJ).map(([k,S])=>{const gs=GROUPS.filter(g=>g.p.s===k);return `<div class="stat"><span><span class="dot" style="--c:${S.c}"></span> ${S.n}</span><span>${gs.reduce((a,g)=>a+g.items.length,0)} файла</span></div>`}).join("")}</div></div>
  <div class="box"><h4>Липсващи кръгове</h4><div>На „Природни науки“ не са публикувани задачите от националните кръгове по <b>химия</b> и <b>биология</b>. Химия: виж връзките по-долу.</div></div>
@@ -301,6 +348,8 @@ async function makeZip(groups,name,btn,prog){
  btn.disabled=false;btn.textContent=old;if(prog)prog.textContent=`Готово – ${n} файла.`;
 }
 document.addEventListener("click",e=>{
+ const mk=e.target.closest(".mk[data-mk]");if(mk){mkToggle(mk.dataset.mk,mk.dataset.p);if(st.s==="search")drawSearch();else if(SUBJ[st.s])drawList();updViewerMarks();return}
+ const vm=e.target.closest("[data-vmk]");if(vm){mkToggle(vm.dataset.vmk,document.getElementById("vd").dataset.p);updViewerMarks();if(SUBJ[st.s])drawList();if(st.s==="search")drawSearch();return}
  const d1=e.target.closest("button.dl[data-dl]");if(d1){dlOne(d1.dataset.dl,d1);return}
  if(e.target.closest("#vd")){const v=document.getElementById("vd");dlOne(v.dataset.p,v);return}
  const b=e.target.closest(".zipbtn[data-gi]");
@@ -330,13 +379,82 @@ function renderContact(c){
   const a=document.createElement("a");a.href=url;a.target="_blank";a.rel="noopener";document.body.appendChild(a);a.click();a.remove();
  };
 }
-function render(){renderMenu();const c=document.getElementById("content");st.s==="home"?renderHome(c):st.s==="facts"?renderFacts(c):st.s==="news"?renderNews(c):st.s==="contact"?renderContact(c):renderSubject(c);renderSide()}
-(async()=>{for(const [k,set] of [["facts",v=>FACTS=v],["news",v=>NEWS=v]]){try{const r=await fetch("data/"+k+".json",{cache:"no-cache"});if(r.ok){const j=await r.json();if(Array.isArray(j)){set(j);if(k==="news")NEWS.sort((a,b)=>String(b.date).localeCompare(String(a.date)))}}}catch(e){}}render()})();
+function updViewerMarks(){const d=document.getElementById("vd");if(!d||!d.dataset.p)return;const p=d.dataset.p;
+ const a=document.getElementById("vmd"),b=document.getElementById("vmv");if(!a)return;
+ a.textContent=MK.d.has(p)?"✔ Решена":"○ Решена";b.textContent=MK.v.has(p)?"★ Любима":"☆ Любима";}
+/* --- търсене --- */
+let SIDX=null,SLOAD=null;const META={};
+const BASE={};GROUPS.forEach(g=>g.items.forEach(it=>{META[it.p]={g,it};BASE[it.p.split("/").pop()]={g,it}}));
+const norm=s=>s.toLowerCase().replace(/ё/g,"е").replace(/\u00ad/g,"");
+function loadIdx(){if(!SLOAD)SLOAD=fetch("data/search.json").then(r=>r.json()).then(j=>{SIDX={};for(const k in j){const m=META[k]||BASE[k]||null;if(m)SIDX[m.it.p]={t:j[k],l:norm(j[k])}}return SIDX});return SLOAD}
+function renderSearch(c){
+ c.innerHTML=`<div class="crumbs">Начало › Търсене в задачите</div><div class="pagehead"><h2>🔎 Търсене в текста на задачите</h2></div>
+ <p style="margin-top:0">Търси във всички задачи и решения от всички години. Напишете тема или дума, например <i>равновесие</i>, <i>генетика</i>, <i>леща</i>, <i>Кеплер</i>. Може и началото на думата – „окисл“ ще намери „окисление“, „окислител“ и т.н.</p>
+ <div class="bigsearch"><input id="sq" type="search" placeholder="Какво търсите?" autocomplete="off"></div>
+ <div class="filters"><span class="lbl">Наука:</span><span id="ss"></span></div>
+ <div class="filters"><span class="lbl">Вид:</span><span id="sk"></span></div>
+ <div id="sres"><div class="empty">Зареждане на индекса…</div></div>`;
+ chipRow(c.querySelector("#ss"),SOPTS,st.r,v=>{st.r=v;drawSearch()});
+ chipRow(c.querySelector("#sk"),[["all","Всички"],["задачи","Задачи"],["решения","Решения"]],st.g,v=>{st.g=v;drawSearch()});
+ const q=c.querySelector("#sq");q.value=st.q;let tm;q.oninput=()=>{clearTimeout(tm);tm=setTimeout(()=>{st.q=q.value;drawSearch()},250)};q.focus();
+ loadIdx().then(()=>drawSearch()).catch(()=>{c.querySelector("#sres").innerHTML='<div class="empty">Индексът за търсене не може да се зареди.</div>'});
+}
+let SLIM=40;
+function drawSearch(){
+ const box=document.getElementById("sres");if(!box)return;
+ document.querySelectorAll("#ss .chip").forEach(b=>b.classList.toggle("on",SOPTS.find(o=>o[1]===b.textContent)[0]===st.r));
+ document.querySelectorAll("#sk .chip").forEach((b,i)=>b.classList.toggle("on",["all","задачи","решения"][i]===st.g));
+ if(!SIDX){return}
+ const words=norm(st.q).split(/\s+/).filter(w=>w.length>=2);
+ if(!words.length){box.innerHTML='<div class="empty">Въведете поне 2 букви.</div>';return}
+ const res=[];
+ for(const p in SIDX){const m=META[p];if(!m)continue;
+  if(st.r!=="all"&&m.g.p.s!==st.r)continue;
+  if(st.g!=="all"&&!m.it.k.startsWith(st.g))continue;
+  const L=SIDX[p].l;let ok=true,score=0;
+  for(const w of words){let i=L.indexOf(w),c=0;if(i<0){ok=false;break}while(i>=0&&c<50){c++;i=L.indexOf(w,i+w.length)}score+=c}
+  if(ok)res.push({p,m,score});}
+ res.sort((a,b)=>b.score-a.score||b.m.g.y-a.m.g.y);
+ if(!res.length){box.innerHTML=`<div class="empty">Нищо не е намерено за „${esc(st.q)}“.</div>`;return}
+ const rx=new RegExp("("+words.map(w=>w.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")).join("|")+")","gi");
+ box.innerHTML=`<p class="count">Намерени: ${res.length} файла${res.length>SLIM?` (показани първите ${SLIM})`:""}</p>`+res.slice(0,SLIM).map(({p,m,score})=>{
+  const S=SUBJ[m.g.p.s],T=SIDX[p].t,L=SIDX[p].l;const i=L.indexOf(words[0]);
+  const a=Math.max(0,i-110),b=Math.min(T.length,i+170);
+  const snip=(a>0?"…":"")+esc(T.slice(a,b)).replace(rx,"<mark>$1</mark>")+(b<T.length?"…":"");
+  const name=m.it.k.charAt(0).toUpperCase()+m.it.k.slice(1);
+  return `<div class="sres"><span class="tag" style="--c:${S.c}">${S.n}</span> <span class="round">${RN[m.g.r]}</span> <span class="count">${m.g.y} г.${m.it.g?" · "+m.it.g+" клас":""} · ${score} съвп.</span><br>
+  <a class="f k-${m.it.k.split(" ")[0]}${MK.d.has(p)?" done":""}" href="#" data-p="${p}" data-u="${m.it.u}" data-t="${esc(m.g.p.t+" – "+(m.it.g?m.it.g+" клас – ":"")+name)}">📄 ${name}</a> <span class="st">${esc(m.g.p.t)}</span>${isTask(m.it)?` <button class="mk d${MK.d.has(p)?" on":""}" data-mk="d" data-p="${p}" title="Решена">${MK.d.has(p)?"✔":"○"}</button><button class="mk v${MK.v.has(p)?" on":""}" data-mk="v" data-p="${p}" title="Любима">${MK.v.has(p)?"★":"☆"}</button>`:""}
+  <div class="sn">${snip}</div></div>`}).join("")+(res.length>SLIM?`<p><button class="btn" id="smore">Покажи още</button></p>`:"");
+ const mb=document.getElementById("smore");if(mb)mb.onclick=()=>{SLIM+=40;drawSearch()};
+}
+/* --- календар --- */
+const today=()=>{const d=new Date();d.setHours(0,0,0,0);return d};
+const pd=s=>{const [y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d)};
+const fd=s=>s.split("-").reverse().join(".");
+function evLabel(e){return e.deadline?`до ${fd(e.start)}`:(e.end?`${fd(e.start)} – ${fd(e.end)}`:fd(e.start))+(e.time?`, ${e.time} ч.`:"")}
+function daysTo(e){return Math.round((pd(e.start)-today())/864e5)}
+function upcoming(){return (CAL.events||[]).filter(e=>pd(e.end||e.start)>=today()).sort((a,b)=>pd(a.start)-pd(b.start))}
+function countdownHTML(n){
+ return upcoming().filter(e=>!e.deadline).slice(0,n).map(e=>{const S=SUBJ[e.s],d=daysTo(e);
+  return `<div class="cd" style="--c:${S.c}"><b>${d<=0?"Днес!":d}</b><span>${d<=0?"":(d===1?"ден":"дни")+" до "}${RN[e.r].toLowerCase()} по ${S.n.toLowerCase()}<br>${evLabel(e)}</span></div>`}).join("");
+}
+function renderCalendar(c){
+ const rows=["obsh","obl","nac"];
+ c.innerHTML=`<div class="crumbs">Начало › Календар</div><div class="pagehead"><h2>📅 Календар на олимпиадите ${esc(CAL.year||"")}</h2></div>
+ <div class="countdown">${countdownHTML(4)}</div>
+ <div style="overflow-x:auto"><table class="cal"><tr><th>Олимпиада</th>${rows.map(r=>`<th>${RN[r]}</th>`).join("")}</tr>
+ ${Object.entries(SUBJ).map(([k,S])=>`<tr><th><span class="dot" style="--c:${S.c}"></span> ${S.n}</th>${rows.map(r=>{const e=(CAL.events||[]).find(x=>x.s===k&&x.r===r);if(!e)return "<td>–</td>";const past=pd(e.end||e.start)<today(),d=daysTo(e);
+  return `<td class="${past?"past":""}">${evLabel(e)}${!past&&d<=30&&d>=0?`<span class="soon">след ${d} дни</span>`:""}${e.place?`<br><small>${esc(e.place)}</small>`:""}</td>`}).join("")}</tr>`).join("")}
+ </table></div>
+ <p style="font-size:14px;color:var(--muted)">„До“ означава краен срок – точната дата на общинския кръг се определя от всяко РУО/община. Източник: <a href="${esc(CAL.sourceUrl||"#")}" target="_blank" rel="noopener">${esc(CAL.source||"МОН")}</a>. Датите могат да бъдат променени от МОН – проверявайте регламента на съответната олимпиада.</p>`;
+}
+function render(){renderMenu();const c=document.getElementById("content");st.s==="home"?renderHome(c):st.s==="facts"?renderFacts(c):st.s==="news"?renderNews(c):st.s==="contact"?renderContact(c):st.s==="search"?renderSearch(c):st.s==="calendar"?renderCalendar(c):renderSubject(c);renderSide()}
+(async()=>{for(const [k,set] of [["facts",v=>FACTS=v],["news",v=>NEWS=v],["calendar",v=>CAL=v]]){try{const r=await fetch("data/"+k+".json",{cache:"no-cache"});if(r.ok){const j=await r.json();if(k==="calendar"&&j&&j.events){set(j);continue}if(Array.isArray(j)){set(j);if(k==="news")NEWS.sort((a,b)=>String(b.date).localeCompare(String(a.date)))}}}catch(e){}}render()})();
 window.addEventListener("hashchange",()=>{const h=location.hash.slice(1);if(SUBJ[h]&&!local(h))return;st={s:(SUBJ[h]||EXTRA[h])?h:(SITE==="A"?"home":st.s),r:"all",g:"all",q:""};render()});
 let vtoken=0;
 async function openViewer(p,u,title){
  const v=document.getElementById("viewer"),b=document.getElementById("vb");
- document.getElementById("vt").textContent=title;document.getElementById("vo").href=u;{const d=document.getElementById("vd");d.dataset.p=p;d.style.display=CAN_DL?"":"none"}document.getElementById("vp").textContent="";
+ document.getElementById("vt").textContent=title;document.getElementById("vo").href=u;{const d=document.getElementById("vd");d.dataset.p=p;d.style.display=CAN_DL?"":"none";updViewerMarks()}document.getElementById("vp").textContent="";
  b.innerHTML='<div class="vmsg">Зарежда се…</div>';v.classList.add("on");document.body.style.overflow="hidden";
  const my=++vtoken;
  try{

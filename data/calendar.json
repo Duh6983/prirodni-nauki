@@ -1,0 +1,19 @@
+{
+ "year": "2026/2027",
+ "source": "Заповед на министъра на образованието и науката за графика на ученическите олимпиади през 2026/2027 г. (31.08.2026)",
+ "sourceUrl": "https://www.mon.bg/nfs/2026/08/6-zapoved-grafik-uons-2026-2027-31082026.pdf",
+ "events": [
+  {"s":"fiz","r":"obsh","start":"2027-01-10","deadline":true,"note":"VII–XII клас"},
+  {"s":"fiz","r":"obl","start":"2027-02-13","time":"9:00"},
+  {"s":"fiz","r":"nac","start":"2027-04-23","end":"2027-04-25"},
+  {"s":"astro","r":"obsh","start":"2027-01-15","deadline":true,"note":"V–XII клас"},
+  {"s":"astro","r":"obl","start":"2027-02-21","time":"14:00"},
+  {"s":"astro","r":"nac","start":"2027-05-07","end":"2027-05-09"},
+  {"s":"him","r":"obsh","start":"2027-01-11","deadline":true,"note":"VII–XII клас"},
+  {"s":"him","r":"obl","start":"2027-02-06","time":"14:00"},
+  {"s":"him","r":"nac","start":"2027-03-19","end":"2027-03-21"},
+  {"s":"bio","r":"obsh","start":"2027-01-29","deadline":true,"note":"VII–XII клас"},
+  {"s":"bio","r":"obl","start":"2027-02-14","time":"9:00"},
+  {"s":"bio","r":"nac","start":"2027-03-26","end":"2027-03-28"}
+ ]
+}
