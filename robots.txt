@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://duh6983.github.io/prirodni-nauki/sitemap.xml
