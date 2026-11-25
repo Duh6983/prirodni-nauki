@@ -139,6 +139,22 @@ footer{border-top:1px solid var(--line);padding:16px 28px;font-size:13px;color:v
 .cd b{font:700 30px/1 "PT Serif",Georgia,serif;display:block}
 .cd span{font-size:13px;opacity:.95}
 
+/* ---- тренировка ---- */
+.trrow{border:1px solid var(--line);border-left:5px solid var(--c,#999);border-radius:4px;padding:9px 14px;margin:8px 0;background:#fff}
+.trh{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;justify-content:space-between}
+.trs{font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:10px;padding:0 8px;white-space:nowrap}
+.trs.ok{color:#2f8a6e;border-color:#cfe6da}.trs.hard{color:#a86b00;border-color:#efe3c6}.trs.fail{color:#b4432f;border-color:#f0d2cb}
+.trtags{margin:4px 0}.trtag{display:inline-block;font-size:12px;background:#f2f6f8;border:1px solid #e3e9ed;border-radius:3px;padding:0 6px;margin:0 4px 2px 0;color:#3d4a52}
+.trtag.on{background:var(--nav);color:#fff;border-color:var(--nav)}
+.tra{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin-top:4px}
+.trrate{margin-left:auto;font-size:13px;color:var(--muted)}
+.trrate button{all:unset;cursor:pointer;border:1px solid var(--line);border-radius:4px;padding:1px 8px;margin-left:4px;font-size:13px;color:var(--ink);background:#f6f8f9}
+.trrate button:hover{background:#eef4fb}.trrate button:focus-visible{outline:2px solid var(--nav)}
+.trstats{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px;margin-top:8px}
+.trst{border:1px solid var(--line);border-radius:6px;padding:8px 10px;font-size:14px;cursor:pointer;display:grid;grid-template-columns:1fr auto;gap:2px 8px}
+.trst:hover{background:#f6f8f9}.trst .pbar{grid-column:1/-1;margin-top:2px}
+@media(max-width:700px){.trrate{margin-left:0;width:100%}}
+
 /* ---- адаптивен изглед ---- */
 nav.menu{flex-wrap:wrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 nav.menu::-webkit-scrollbar{display:none}
@@ -205,6 +221,7 @@ img,canvas{max-width:100%}
 <div class="viewer" id="viewer"><div class="vbar"><b id="vt"></b><span id="vp" style="font-size:13px;opacity:.85"></span><button id="vmd" data-vmk="d">○ Решена</button><button id="vmv" data-vmk="v">☆ Любима</button><button id="vd" style="display:none">⬇ Свали</button><a id="vo" href="#" target="_blank" rel="noopener">Отвори оригинала ↗</a><button id="vc">✕ Затвори</button></div><div class="vbody" id="vb"></div></div>
 <script src="lib/pdf.min.js"></script>
 <script src="lib/jszip.min.js"></script>
+<script src="js/train.js"></script>
 <script>
 /* ===== Анимирана заглавна „прожекция“ ===== */
 (function(){
@@ -277,7 +294,7 @@ const POSTS=[{"id":900000,"s":"him","t":"LII НОХ – национален к�
 const SITE="A";
 const URLS={A:"https://claude.ai/artifact/MbRN9on7V5u5Mv6Kqx75Hd",B:"https://claude.ai/artifact/4c19onn38SnWLNS1M1zssr",C:"https://claude.ai/artifact/Y7AgZnseQmYsGftwSHk58e"};
 const HOST={astro:"A",him:"A",fiz:"A",bio:"A"};
-const EXTRA={facts:"Любопитно",news:"Новини и статии",contact:"Пишете ни",search:"Търсене",calendar:"Календар",prep:"Подготовка",fame:"Зала на славата"};
+const EXTRA={facts:"Любопитно",news:"Новини и статии",contact:"Пишете ни",search:"Търсене",calendar:"Календар",prep:"Подготовка",train:"Тренировка",fame:"Зала на славата"};
 let CAL={"year":"2026/2027","source":"Заповед на министъра на образованието и науката за графика на ученическите олимпиади през 2026/2027 г. (31.08.2026)","sourceUrl":"https://www.mon.bg/nfs/2026/08/6-zapoved-grafik-uons-2026-2027-31082026.pdf","events":[{"s":"fiz","r":"obsh","start":"2027-01-10","deadline":true,"note":"VII–XII клас"},{"s":"fiz","r":"obl","start":"2027-02-13","time":"9:00"},{"s":"fiz","r":"nac","start":"2027-04-23","end":"2027-04-25"},{"s":"astro","r":"obsh","start":"2027-01-15","deadline":true,"note":"V–XII клас"},{"s":"astro","r":"obl","start":"2027-02-21","time":"14:00"},{"s":"astro","r":"nac","start":"2027-05-07","end":"2027-05-09"},{"s":"him","r":"obsh","start":"2027-01-11","deadline":true,"note":"VII–XII клас"},{"s":"him","r":"obl","start":"2027-02-06","time":"14:00"},{"s":"him","r":"nac","start":"2027-03-19","end":"2027-03-21"},{"s":"bio","r":"obsh","start":"2027-01-29","deadline":true,"note":"VII–XII клас"},{"s":"bio","r":"obl","start":"2027-02-14","time":"9:00"},{"s":"bio","r":"nac","start":"2027-03-26","end":"2027-03-28"}]};
 /* --- отметки --- */
 const MK={d:new Set(),v:new Set()};
@@ -312,7 +329,7 @@ POSTS.forEach(p=>{const m={};p.i.forEach(it=>{const k=it.r+"|"+it.y;(m[k]=m[k]||
 const ALLF=GROUPS.reduce((a,g)=>a+g.items.length,0);
 function go(s){if(!local(s)){location.href=hrefOf(s);return}st={s,r:"all",g:"all",q:"",m:"all"};try{history.replaceState(null,"",s==="home"?location.pathname:"#"+s)}catch(e){}render();window.scrollTo(0,0)}
 function renderMenu(){const m=document.getElementById("menu");m.innerHTML="";
- [["home","Начало"],...Object.entries(SUBJ).map(([k,v])=>[k,v.n]),["facts","Любопитно"],["news","Новини и статии"],["search","🔎 Търсене"],["calendar","📅 Календар"],["prep","🎯 Подготовка"],["fame","🏆 Зала на славата"],["contact","✉ Пишете ни"]].forEach(([k,n])=>{const b=document.createElement("a");b.textContent=n;b.href=hrefOf(k);if(!local(k))b.target="_top";if(st.s===k)b.className="on";if(local(k))b.onclick=ev=>{ev.preventDefault();go(k)};m.appendChild(b)})}
+ [["home","Начало"],...Object.entries(SUBJ).map(([k,v])=>[k,v.n]),["facts","Любопитно"],["news","Новини и статии"],["search","🔎 Търсене"],["train","🧠 Тренировка"],["calendar","📅 Календар"],["prep","🎯 Подготовка"],["fame","🏆 Зала на славата"],["contact","✉ Пишете ни"]].forEach(([k,n])=>{const b=document.createElement("a");b.textContent=n;b.href=hrefOf(k);if(!local(k))b.target="_top";if(st.s===k)b.className="on";if(local(k))b.onclick=ev=>{ev.preventDefault();go(k)};m.appendChild(b)})}
 function groupHTML(g,gi){
  const S=SUBJ[g.p.s];
  const byG={};const order=[];
@@ -377,6 +394,7 @@ function renderHome(c){
  const years=[...new Set(GROUPS.map(g=>g.y))].sort((a,b)=>b-a);
  c.innerHTML=`<div class="crumbs">Начало</div><div class="pagehead"><h2>Добре дошли</h2><span class="count">${ALLF} файла · ${years[years.length-1]}–${years[0]}</span></div>
  <p>Тук на едно място са събрани задачите и решенията от общинските, областните и националните кръгове на олимпиадите по <b>астрономия, физика, химия и биология</b>, публикувани на сайта „Природни науки“. Щракнете върху файл и той се отваря направо тук; бутонът „Отвори оригинала“ води до файла на prirodninauki.bg. Изберете предмет, а след това кръг и клас.</p>
+ <div class="note">🧠 <b>Ново: Тренировка.</b> Изберете тема, решете задача и сайтът ще ви я покаже отново точно когато трябва да я преговорите. <a href="#train" onclick="event.preventDefault();go('train')">Започнете тренировка →</a></div>
  <div class="bigsearch"><input id="hq" type="search" placeholder="🔎 Търсете в задачите – напр. „генетика“, „оптика“, „равновесие“…"></div>
  ${upcoming().length?`<h3 style="font-family:'PT Serif',serif;margin:10px 0 6px">Следващите кръгове</h3><div class="countdown">${countdownHTML(3)}</div><p style="margin-top:-8px"><a href="#calendar" onclick="event.preventDefault();go('calendar')">Целият календар →</a></p>`:""}
  <div class="home-grid" id="tiles"></div>
@@ -638,7 +656,7 @@ function renderFame(c){
   return `<div class="year">${y}</div><ul class="news">${it.map(n=>{const S=SUBJ[n.s];return `<li><span class="nd">${S?`<span class="tag" style="--c:${S.c}">${S.n}</span>`:"🏅"}</span><span class="nt">${n.url?`<a href="${esc(n.url)}" target="_blank" rel="noopener">${esc(n.title)}</a>`:esc(n.title)}<br><span class="ns">${esc(fmtDate(n.date))} · ${esc(n.source||"")}</span></span></li>`}).join("")}</ul>`}).join("")||'<div class="empty">Няма записи.</div>';
 }
 
-function render(){if(window.setHero)setHero(SUBJ[st.s]?st.s:"home");renderMenu();try{const on=document.querySelector("nav.menu a.on");if(on&&on.scrollIntoView)on.scrollIntoView({block:"nearest",inline:"center"})}catch(e){}const c=document.getElementById("content");st.s==="home"?renderHome(c):st.s==="facts"?renderFacts(c):st.s==="news"?renderNews(c):st.s==="contact"?renderContact(c):st.s==="search"?renderSearch(c):st.s==="prep"?renderPrep(c):st.s==="fame"?renderFame(c):st.s==="calendar"?renderCalendar(c):renderSubject(c);renderSide()}
+function render(){if(window.setHero)setHero(SUBJ[st.s]?st.s:"home");renderMenu();try{const on=document.querySelector("nav.menu a.on");if(on&&on.scrollIntoView)on.scrollIntoView({block:"nearest",inline:"center"})}catch(e){}const c=document.getElementById("content");st.s==="home"?renderHome(c):st.s==="facts"?renderFacts(c):st.s==="news"?renderNews(c):st.s==="contact"?renderContact(c):st.s==="search"?renderSearch(c):st.s==="train"?renderTrain(c):st.s==="prep"?renderPrep(c):st.s==="fame"?renderFame(c):st.s==="calendar"?renderCalendar(c):renderSubject(c);renderSide()}
 (async()=>{for(const [k,set] of [["facts",v=>FACTS=v],["news",v=>NEWS=v],["calendar",v=>CAL=v]]){try{const r=await fetch("data/"+k+".json",{cache:"no-cache"});if(r.ok){const j=await r.json();if(k==="calendar"&&j&&j.events){set(j);continue}if(Array.isArray(j)){set(j);if(k==="news")NEWS.sort((a,b)=>String(b.date).localeCompare(String(a.date)))}}}catch(e){}}render()})();
 window.addEventListener("hashchange",()=>{const h=location.hash.slice(1);if(SUBJ[h]&&!local(h))return;st={s:(SUBJ[h]||EXTRA[h])?h:(SITE==="A"?"home":st.s),r:"all",g:"all",q:""};render()});
 let vtoken=0;
